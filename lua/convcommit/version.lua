@@ -23,7 +23,7 @@ end
 local function get_changelog_entries_since(tag)
 	local delimiter = "====BETWEEN_COMMITS===="
 	local range
-	if tag == nil or tag == "v0.0.0" then
+	if tag == nil then
 		range = "HEAD"
 	else
 		range = tag .. "..HEAD"
