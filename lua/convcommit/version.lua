@@ -16,6 +16,21 @@ local function get_latest_tag()
 	end
 end
 
+--- Checks whether a given commit should be automatically rejected from the changelog.
+---@param commit string Commit to check.
+---@return boolean: True iff the commit can be included in the changelog.
+local function should_be_included_in_changelog(commit)
+	local excluded_types = { "docs", "test", "ci", "merge" }
+	local is_excluded = false
+	for _, prefix in ipairs(excluded_types) do
+		if string.sub(commit, 1, #prefix) == prefix then
+			is_excluded = true
+			break
+		end
+	end
+	return not is_excluded
+end
+
 --- Returns the list of changelog entries from commits after the given tag.
 --- Entries are taken from the Changelog-Entry footer, or the first line if no such footer.
 ---@param tag string|nil: Tag after which to return commits, or nil to take all.
@@ -38,7 +53,9 @@ local function get_changelog_entries_since(tag)
 			table.insert(entries, changelog_entry)
 		else
 			local subject = commit:match("([^%s].-)\n") or commit
-			table.insert(entries, subject)
+			if should_be_included_in_changelog(subject) then
+				table.insert(entries, subject)
+			end
 		end
 	end
 	return entries

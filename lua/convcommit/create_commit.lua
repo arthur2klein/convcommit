@@ -8,6 +8,21 @@ local notify = function(message, level)
 	require("notify")(message, level, { title = "Commit" })
 end
 
+local commit_types = {
+	"build",
+	"chore",
+	"ci",
+	"docs",
+	"feat",
+	"fix",
+	"perf",
+	"refactor",
+	"revert",
+	"style",
+	"test",
+	"merge",
+}
+
 ---@type CommitBuilder
 local builder
 
@@ -109,20 +124,6 @@ end
 --- Acceptable values are: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test,
 --- merge
 local function select_commit_type()
-	local commit_types = {
-		"build",
-		"chore",
-		"ci",
-		"docs",
-		"feat",
-		"fix",
-		"perf",
-		"refactor",
-		"revert",
-		"style",
-		"test",
-		"merge",
-	}
 	select(commit_types, { prompt = "Select commit type:", default = "fix" }, function(choice)
 		if not choice or choice == "" then
 			notify("❌ Commit cancelled.", vim.log.levels.ERROR)
