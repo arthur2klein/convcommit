@@ -1,4 +1,4 @@
-local commit_builder = require("lua.commit_builder")
+local commit_builder = require("convcommit.commit_builder")
 
 describe("commit_builder", function()
 	it("creates an empty commit", function()
@@ -29,9 +29,9 @@ describe("commit_builder", function()
 	it("adds a footer", function()
 		local commit = commit_builder.new()
 		assert.are.same({}, commit.footers)
-		commit_builder.addFooter(commit, "key: value")
+		commit_builder.add_footer(commit, "key: value")
 		assert.are.same({ "key: value" }, commit.footers)
-		commit_builder.addFooter(commit, "lorem: ipsum")
+		commit_builder.add_footer(commit, "lorem: ipsum")
 		assert.are.same({ "key: value", "lorem: ipsum" }, commit.footers)
 	end)
 
