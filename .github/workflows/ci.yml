@@ -18,12 +18,12 @@ jobs:
       - name: Install Lua and Luarocks
         uses: leafo/gh-actions-lua@v9
         with:
-          lua-version: "5.1"
+          luaVersion: "5.1"
 
       - name: Install luarocks
         uses: leafo/gh-actions-luarocks@v4
         with:
-          luarocks-version: "3.9.2"
+          luarocksVersion: "3.9.2"
 
       - name: Install busted
         run: |
