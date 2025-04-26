@@ -118,13 +118,18 @@ As an example, here is a configuration of the plugin using Lazy.
 ```lua
 {
   "arthur2klein/convcommit",
-  dependencies = { "MunifTanjim/nui.nvim", "nvim-telescope/telescope.nvim" },
+  dependencies = {
+    "MunifTanjim/nui.nvim",
+    "nvim-telescope/telescope.nvim",
+    "nvim-lua/plenary.nvim",
+    "rcarriga/nvim-notify",
+  },
   config = function()
     local convcommit = require("custom.convcommit")
     vim.keymap.set("n", "<leader>gg", convcommit.create_commit)
-    vim.keymap.set("n", "<leader>ga", convcommit.git_add)
     vim.keymap.set("n", "<leader>gv", convcommit.create_version_tag)
     vim.keymap.set("n", "<leader>gp", convcommit.push)
+    vim.keymap.set("n", "<leader>ga", convcommit.git_add)
   end,
 }
 ```
