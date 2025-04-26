@@ -1,5 +1,7 @@
 # Conventional commit builder for nvim
 
+[![CI](https://github.com/arthur2klein/convcommit/actions/workflows/ci.yml/badge.svg)](https://github.com/arthur2klein/convcommit/actions/workflows/ci.yml)
+
 ## Motivation
 
 Creating my own plugin has allowed me to fulfill some of my requirements and preferences:
