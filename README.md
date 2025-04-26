@@ -31,7 +31,7 @@ This project makes use of several other projects to manage ui:
     "rcarriga/nvim-notify",
   },
   config = function()
-    local convcommit = require("custom.convcommit")
+    local convcommit = require("convcommit")
     vim.keymap.set("n", "<leader>gg", convcommit.create_commit)
     vim.keymap.set("n", "<leader>gv", convcommit.create_version_tag)
     vim.keymap.set("n", "<leader>gp", convcommit.push)
