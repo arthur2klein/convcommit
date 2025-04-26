@@ -1,6 +1,6 @@
 local M = {}
 
-local multiline = require("input").multiline_input
+local multiline = require("convcommit.input").multiline_input
 local notify = function(message, level)
 	require("notify")(message, level, { title = "Version" })
 end

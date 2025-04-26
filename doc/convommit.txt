@@ -121,11 +121,10 @@ As an example, here is a configuration of the plugin using Lazy.
   dependencies = {
     "MunifTanjim/nui.nvim",
     "nvim-telescope/telescope.nvim",
-    "nvim-lua/plenary.nvim",
     "rcarriga/nvim-notify",
   },
   config = function()
-    local convcommit = require("custom.convcommit")
+    local convcommit = require("convcommit")
     vim.keymap.set("n", "<leader>gg", convcommit.create_commit)
     vim.keymap.set("n", "<leader>gv", convcommit.create_version_tag)
     vim.keymap.set("n", "<leader>gp", convcommit.push)
