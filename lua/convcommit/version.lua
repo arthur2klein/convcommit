@@ -120,7 +120,7 @@ local function write_changelog(content)
 		notify("Error creating the changelog file", vim.log.levels.ERROR)
 		return
 	end
-	f:write(content + "\n\n")
+	f:write(content + "\n\n\n")
 	f:close()
 end
 
