@@ -1,5 +1,5 @@
-local has_nui = pcall(require, "nui")
-local has_notify = pcall(require, "notify")
+local has_nui = not pcall(require, "nui")
+local has_notify = not pcall(require, "notify")
 local notify = function(message, level)
 	if has_notify then
 		require("notify")(message, level, { title = "Input" })
@@ -54,10 +54,6 @@ function M.input(opts, on_submit)
 	else
 		vim.schedule(function()
 			local result = vim.fn.input(opts.prompt .. " ", opts.default or "")
-			if result == "" then
-				notify("❌ Cancelled.", vim.log.levels.WARN)
-				return
-			end
 			on_submit(result)
 		end)
 	end
