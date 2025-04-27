@@ -7,21 +7,9 @@ local commit_builder = require("convcommit.commit_builder")
 local notify = function(message, level)
 	require("notify")(message, level, { title = "Commit" })
 end
-
-local commit_types = {
-	"build",
-	"chore",
-	"ci",
-	"docs",
-	"feat",
-	"fix",
-	"perf",
-	"refactor",
-	"revert",
-	"style",
-	"test",
-	"merge",
-}
+local commit_types = require("convcommit.setup").commit_types
+local footer_keys = require("convcommit.setup").footer_keys
+local unpack = table.unpack or unpack
 
 ---@type CommitBuilder
 local builder
@@ -45,7 +33,7 @@ end
 
 --- Adds footers recursively
 local function add_footer()
-	local footers = { "End creation", "Changelog-Entry", "Release-Note", "Co-Author", "Other" }
+	local footers = { "End creation", unpack(footer_keys), "Other" }
 	select(footers, { prompt = "Add a footer:", default = "End creation" }, function(key)
 		if key == "End creation" then
 			preview()

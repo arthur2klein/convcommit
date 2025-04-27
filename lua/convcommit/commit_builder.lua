@@ -87,15 +87,28 @@ function CommitBuilder.add_footer(self, footer)
 	table.insert(self.footers, footer)
 end
 
+--- Checks if a given footer is already defined.
+---@param self CommitBuilder: Data of the commit.
+---@param footer_key string: Key to search.
+---@return boolean: True iff the footer already contains the given key.
+local function contains_footer(self, footer_key)
+	for _, str in ipairs(self.footers) do
+		if str:sub(1, #footer_key) == footer_key then
+			return true
+		end
+	end
+	return false
+end
+
 --- Creates the commit from the given data
 ---@param self CommitBuilder: Data of the commit to create.
 ---@return string: Commit message for the given commit.
 function CommitBuilder.build(self)
-	if self.ticket_id and #self.ticket_id > 0 then
+	if not contains_footer(self, "Ticket-Id") and self.ticket_id and #self.ticket_id > 0 then
 		self.subject = string.format("[%s] %s", self.ticket_id, self.subject)
 		table.insert(self.footers, string.format("Ticket-Id: %s", self.ticket_id))
 	end
-	if self.ticket_link and #self.ticket_link > 0 then
+	if not contains_footer(self, "Ticket-Link") and self.ticket_link and #self.ticket_link > 0 then
 		table.insert(self.footers, string.format("Ticket-Link: %s", self.ticket_link))
 	end
 	if self.scope then

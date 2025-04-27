@@ -4,6 +4,7 @@ local multiline = require("convcommit.input").multiline_input
 local notify = function(message, level)
 	require("notify")(message, level, { title = "Version" })
 end
+local excluded_types = require("convcommit.setup").excluded_types
 
 --- Returns the latest tag of the given project.
 --- @return string | nil: Latest tag of the given project.
@@ -20,7 +21,6 @@ end
 ---@param commit string Commit to check.
 ---@return boolean: True iff the commit can be included in the changelog.
 function M.should_be_included_in_changelog(commit)
-	local excluded_types = { "docs", "test", "ci", "merge" }
 	local is_excluded = false
 	for _, prefix in ipairs(excluded_types) do
 		if string.sub(commit, 1, #prefix) == prefix then
@@ -147,10 +147,10 @@ end
 ---@param version string New version tag to create.
 ---@param entries string[] List of entries to add in the CHANGELOG.md file.
 local function ask_for_confirmation(version, entries)
-	multiline({ prompt = "Confirm message:", default = build_changelog(version, entries) }, function(message)
-		notify(create_tag(version), vim.log.levels.INFO)
+	multiline({ prompt = "Confirm message:", default = M.build_changelog(version, entries) }, function(message)
 		write_changelog(message)
 		commit_changelog(version)
+		notify(create_tag(version), vim.log.levels.INFO)
 		notify("✅ Changelog created!", vim.log.levels.INFO)
 	end)
 end

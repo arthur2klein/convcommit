@@ -1,6 +1,6 @@
 ## v0.0.0 - 2025-04-26
 
-- feat(convommit.txt): Creation as a separated project
+- feat(convcommit.txt): Creation as a separated project
 
 ## v0.1.0 - 2025-04-26
 

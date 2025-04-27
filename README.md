@@ -42,5 +42,5 @@ This project makes use of several other projects to manage ui:
 
 ## Additional information
 
-For additional information, please refer to the [help](./doc/convommit.txt) file.
+For additional information, please refer to the [help](./doc/convcommit.txt) file.
 

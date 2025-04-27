@@ -113,25 +113,56 @@ local git = require("convcommit")
 git.push()
 ```
 ==============================================================================
-INSTALLATION & CONFIGURATION                                  *convcommit-config*
+INSTALLATION & CONFIGURATION                                 *convcommit-config*
 As an example, here is a configuration of the plugin using Lazy.
-```lua
-{
-  "arthur2klein/convcommit",
-  dependencies = {
-    "MunifTanjim/nui.nvim",
-    "nvim-telescope/telescope.nvim",
-    "rcarriga/nvim-notify",
-  },
-  config = function()
-    local convcommit = require("convcommit")
-    vim.keymap.set("n", "<leader>gg", convcommit.create_commit)
-    vim.keymap.set("n", "<leader>gv", convcommit.create_version_tag)
-    vim.keymap.set("n", "<leader>gp", convcommit.push)
-    vim.keymap.set("n", "<leader>ga", convcommit.git_add)
-  end,
-}
-```
+
+  {
+    "arthur2klein/convcommit",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-telescope/telescope.nvim",
+      "rcarriga/nvim-notify",
+    },
+    config = function()
+      local convcommit = require("convcommit")
+      convcommit.setup({})
+      vim.keymap.set("n", "<leader>gg", convcommit.create_commit)
+      vim.keymap.set("n", "<leader>gv", convcommit.create_version_tag)
+      vim.keymap.set("n", "<leader>gp", convcommit.push)
+      vim.keymap.set("n", "<leader>ga", convcommit.git_add)
+    end,
+  }
+
+------------------------------------------------------------------------------
+`require('convcommit').setup()`                               *convcommit.setup()*
+Defines some global parameters for the plugin.
+Accepted fields are:
+- commit_types: Table of available commit types,       *convcommit-commit-types*
+  Default: {
+    "build",
+    "chore",
+    "ci",
+    "docs",
+    "feat",
+    "fix",
+    "perf",
+    "refactor",
+    "revert",
+    "style",
+    "test",
+    "merge",
+  }
+- footer_keys: Table of available footer keys,          *convcommit-footer-keys*
+  Default: {
+    "Changelog-Entry",
+    "Release-Note",
+    "Co-Author",
+    "Ticket-Id",
+    "Ticket-Link",
+  }
+- excluded_types: Types to exclude from changelog.   *convcommit-excluded-types*
+  Default: {"docs", "test", "ci", "merge"}
+
 ------------------------------------------------------------------------------
 PushConfig                                              *convcommit-push-config*
 
