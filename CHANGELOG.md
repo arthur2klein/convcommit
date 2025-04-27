@@ -31,3 +31,9 @@
 
 
 
+## v0.3.2 - 2025-04-27
+
+- fix(convcommit): only first footer_keys was added
+
+
+
