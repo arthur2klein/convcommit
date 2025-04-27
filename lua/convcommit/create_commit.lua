@@ -33,7 +33,9 @@ end
 
 --- Adds footers recursively
 local function add_footer()
-	local footers = { "End creation", unpack(footer_keys), "Other" }
+	local footers = { unpack(footer_keys) }
+	table.insert(footers, 1, "End creation")
+	table.insert(footers, "Other")
 	select(footers, { prompt = "Add a footer:", default = "End creation" }, function(key)
 		if key == "End creation" then
 			preview()
