@@ -19,7 +19,7 @@ end
 --- Checks whether a given commit should be automatically rejected from the changelog.
 ---@param commit string Commit to check.
 ---@return boolean: True iff the commit can be included in the changelog.
-local function should_be_included_in_changelog(commit)
+function M.should_be_included_in_changelog(commit)
 	local excluded_types = { "docs", "test", "ci", "merge" }
 	local is_excluded = false
 	for _, prefix in ipairs(excluded_types) do
@@ -53,7 +53,7 @@ local function get_changelog_entries_since(tag)
 			table.insert(entries, changelog_entry)
 		else
 			local subject = commit:match("([^%s].-)\n") or commit
-			if should_be_included_in_changelog(subject) then
+			if M.should_be_included_in_changelog(subject) then
 				table.insert(entries, subject)
 			end
 		end
@@ -64,7 +64,7 @@ end
 --- Determines the type of version bump from the given list of commit.
 ---@param commits string[] List of commits for the new version.
 ---@return string: Type of version bump amongst patch, minor and major.
-local function determine_bump(commits)
+function M.determine_bump(commits)
 	local bump = "patch"
 	for _, c in ipairs(commits) do
 		if c:match("BREAKING CHANGE") then
@@ -81,7 +81,7 @@ end
 ---@param version string|nil Previous version tag.
 ---@param level string Level of bump amongst patch, minor and major.
 ---@return string: New version tag.
-local function bump_version(version, level)
+function M.bump_version(version, level)
 	if version == nil then
 		return "v0.0.0"
 	end
@@ -104,7 +104,7 @@ end
 ---@param new_version string New version tag.
 ---@param entries string[] List of entries to write in the changelog.
 ---@return string: Generated content of the changelog.
-local function build_changelog(new_version, entries)
+function M.build_changelog(new_version, entries)
 	local message = "## " .. new_version .. " - " .. os.date("%Y-%m-%d") .. "\n\n"
 	for _, c in ipairs(entries) do
 		message = message .. "- " .. c .. "\n"
@@ -164,8 +164,8 @@ function M.create_version_tag()
 		notify("No new commits since " .. (latest_tag or "nil"), vim.log.levels.ERROR)
 		return
 	end
-	local bump = determine_bump(commits)
-	local new_version = bump_version(latest_tag, bump)
+	local bump = M.determine_bump(commits)
+	local new_version = M.bump_version(latest_tag, bump)
 	ask_for_confirmation(new_version, commits)
 end
 
