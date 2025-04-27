@@ -19,3 +19,9 @@
 
 - docs(CHANGELOG.md): add line break between versions
 - docs(CHANGELOG.md): Add changelog for version v0.1.1
+## v0.3.0 - 2025-04-27
+
+- feat(setup.lua): Add a setup function to configure the plugin
+
+
+
