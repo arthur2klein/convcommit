@@ -1,6 +1,11 @@
 local M = {}
+local has_notify = require("convcommit.setup").has_notify
 local notify = function(message, level)
-	require("notify")(message, level, { title = "Push" })
+	if has_notify then
+		require("notify")(message, level, { title = "Push" })
+	else
+		vim.notify(message, level)
+	end
 end
 
 ---@class PushConfig Configuration of the push() function.

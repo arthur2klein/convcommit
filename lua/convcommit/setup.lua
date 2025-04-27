@@ -1,5 +1,17 @@
 local M = {}
 
+--- True iff nui is available.
+---@type boolean
+M.has_nui = not pcall(require, "nui")
+
+--- True iff nvim-notify is available.
+---@type boolean
+M.has_notify = not pcall(require, "notify")
+
+--- True iff telescope is available.
+---@type boolean
+M.has_telescope = not pcall(require, "telescope")
+
 ---@class SetupOptions Options available when setting up the plugin.
 ---@field commit_types string[] Table of available commit types.
 ---@field footer_keys string[] Table of available footer keys.

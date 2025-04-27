@@ -1,8 +1,13 @@
 local M = {}
 
 local multiline = require("convcommit.input").multiline_input
+local has_nui = require("convcommit.setup").has_nui
 local notify = function(message, level)
-	require("notify")(message, level, { title = "Version" })
+	if has_nui then
+		require("notify")(message, level, { title = "Version" })
+	else
+		vim.notify(message, level)
+	end
 end
 local excluded_types = require("convcommit.setup").excluded_types
 

@@ -1,5 +1,6 @@
-local has_nui = not pcall(require, "nui")
-local has_notify = not pcall(require, "notify")
+local has_nui = require("convcommit.setup").has_nui
+local has_notify = require("convcommit.setup").has_notify
+
 local notify = function(message, level)
 	if has_notify then
 		require("notify")(message, level, { title = "Input" })
@@ -52,10 +53,7 @@ function M.input(opts, on_submit)
 			vim.cmd("startinsert")
 		end)
 	else
-		vim.schedule(function()
-			local result = vim.fn.input(opts.prompt .. " ", opts.default or "")
-			on_submit(result)
-		end)
+		vim.ui.input(opts, on_submit)
 	end
 end
 

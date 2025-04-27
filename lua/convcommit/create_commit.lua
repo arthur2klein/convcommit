@@ -1,11 +1,16 @@
 local M = {}
 
+local has_notify = require("convcommit.setup").has_notify
 local input = require("convcommit.input").input
 local multiline = require("convcommit.input").multiline_input
 local select = require("convcommit.select").select
 local commit_builder = require("convcommit.commit_builder")
 local notify = function(message, level)
-	require("notify")(message, level, { title = "Commit" })
+	if has_notify then
+		require("notify")(message, level, { title = "Commit" })
+	else
+		vim.notify(message, level)
+	end
 end
 local commit_types = require("convcommit.setup").commit_types
 local footer_keys = require("convcommit.setup").footer_keys

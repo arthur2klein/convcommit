@@ -1,5 +1,10 @@
 local M = {}
 
+local has_telescope = require("convcommit.setup").has_telescope
+if not has_telescope then
+	M.git_add = nil
+	return M
+end
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local conf = require("telescope.config").values
