@@ -2,15 +2,15 @@ local M = {}
 
 --- True iff nui is available.
 ---@type boolean
-M.has_nui = not pcall(require, "nui")
+M.has_nui = pcall(require, "nui.input")
 
 --- True iff nvim-notify is available.
 ---@type boolean
-M.has_notify = not pcall(require, "notify")
+M.has_notify = pcall(require, "notify")
 
 --- True iff telescope is available.
 ---@type boolean
-M.has_telescope = not pcall(require, "telescope")
+M.has_telescope = pcall(require, "telescope.pickers")
 
 ---@class SetupOptions Options available when setting up the plugin.
 ---@field commit_types string[] Table of available commit types.

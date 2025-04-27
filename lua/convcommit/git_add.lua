@@ -2,7 +2,7 @@ local M = {}
 
 local has_telescope = require("convcommit.setup").has_telescope
 if not has_telescope then
-	M.git_add = nil
+	M.git_add = function() end
 	return M
 end
 local pickers = require("telescope.pickers")
