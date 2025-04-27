@@ -37,3 +37,10 @@
 
 
 
+## v0.3.3 - 2025-04-27
+
+- fix(convcommit): fix fallback funtion for add
+- fix(convcommit): add safe-guard in case dependencies are missing
+
+
+
