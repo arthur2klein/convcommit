@@ -44,3 +44,9 @@
 
 
 
+## v0.4.0 - 2025-04-29
+
+- feat(input.lua): add setup option for the key to validate a multiline input
+
+
+
