@@ -162,6 +162,9 @@ Accepted fields are:
   }
 - excluded_types: Types to exclude from changelog.   *convcommit-excluded-types*
   Default: {"docs", "test", "ci", "merge"}
+- validate_input_key: Key used to validate a     *convcommit-validate-input-key*
+  multiline input.
+  Default: "<leader><CR>"
 
 ------------------------------------------------------------------------------
 PushConfig                                              *convcommit-push-config*

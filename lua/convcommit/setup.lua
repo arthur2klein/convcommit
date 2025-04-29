@@ -13,9 +13,10 @@ M.has_notify = pcall(require, "notify")
 M.has_telescope = pcall(require, "telescope.pickers")
 
 ---@class SetupOptions Options available when setting up the plugin.
----@field commit_types string[] Table of available commit types.
----@field footer_keys string[] Table of available footer keys.
----@field excluded_types string[] Types to exclude from changelog.
+---@field commit_types string[]? Table of available commit types.
+---@field footer_keys string[]? Table of available footer keys.
+---@field excluded_types string[]? Types to exclude from changelog.
+---@field validate_input_key string? Key to validate an input.
 
 --- Available types of commits
 ---@type string[]
@@ -48,6 +49,10 @@ M.footer_keys = {
 ---@type string[]
 M.excluded_types = { "docs", "test", "ci", "merge" }
 
+--- Key to validate multi-line inputs.
+---@type string
+M.validate_input_key = "<leader><CR>"
+
 --- Defines global parameters for the plugin.
 ---@param options SetupOptions Options available.
 function M.setup(options)
@@ -59,6 +64,9 @@ function M.setup(options)
 	end
 	if options["excluded_type"] ~= nil then
 		M.excluded_types = options["excluded_type"]
+	end
+	if options["validate_input_key"] ~= nil then
+		M.validate_input_key = options["validate_input_key"]
 	end
 end
 

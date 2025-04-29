@@ -1,5 +1,7 @@
-local has_nui = require("convcommit.setup").has_nui
-local has_notify = require("convcommit.setup").has_notify
+local setup = require("convcommit.setup")
+local has_nui = setup.has_nui
+local has_notify = setup.has_notify
+local validate_input_key = setup.validate_input_key
 
 local notify = function(message, level)
 	if has_notify then
@@ -93,7 +95,7 @@ function M.multiline_input(opts, on_submit)
 			popup:mount()
 		end)
 		vim.api.nvim_buf_set_lines(popup.bufnr, 0, -1, false, lines)
-		vim.keymap.set("n", "<leader><CR>", function()
+		vim.keymap.set("n", validate_input_key, function()
 			local result = vim.api.nvim_buf_get_lines(popup.bufnr, 0, -1, false)
 			popup:unmount()
 			on_submit(table.concat(result, "\n"))
