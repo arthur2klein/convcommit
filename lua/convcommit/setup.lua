@@ -56,17 +56,17 @@ M.validate_input_key = "<leader><CR>"
 --- Defines global parameters for the plugin.
 ---@param options SetupOptions Options available.
 function M.setup(options)
-	if options["commit_types"] ~= nil then
-		M.commit_types = options["commit_types"]
+	if options.commit_types ~= nil then
+		M.commit_types = options.commit_types
 	end
-	if options["footer_keys"] ~= nil then
-		M.commit_types = options["footer_keys"]
+	if options.footer_keys ~= nil then
+		M.commit_types = options.footer_keys
 	end
-	if options["excluded_type"] ~= nil then
-		M.excluded_types = options["excluded_type"]
+	if options.excluded_types ~= nil then
+		M.excluded_types = options.excluded_types
 	end
-	if options["validate_input_key"] ~= nil then
-		M.validate_input_key = options["validate_input_key"]
+	if options.validate_input_key ~= nil then
+		M.validate_input_key = options.validate_input_key
 	end
 end
 
