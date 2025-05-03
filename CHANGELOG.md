@@ -50,3 +50,10 @@
 
 
 
+## v0.4.1 - 2025-05-03
+
+- fix(setup.lua): Fix config option usage
+- fix(setup.lua): fix config option usage
+
+
+
