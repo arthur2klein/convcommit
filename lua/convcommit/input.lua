@@ -1,10 +1,5 @@
-local setup = require("convcommit.setup")
-local has_nui = setup.has_nui
-local has_notify = setup.has_notify
-local validate_input_key = setup.validate_input_key
-
 local notify = function(message, level)
-	if has_notify then
+	if require("convcommit.setup").has_notify then
 		require("notify")(message, level, { title = "Input" })
 	else
 		vim.notify(message, level)
@@ -22,7 +17,7 @@ local M = {}
 ---@param opts InputOptions Props of the field.
 ---@param on_submit fun(value: string): nil Action that requires the inputed value.
 function M.input(opts, on_submit)
-	if has_nui then
+	if require("convcommit.setup").has_nui then
 		local input = require("nui.input")({
 			position = "50%",
 			size = {
@@ -65,7 +60,7 @@ end
 ---@param opts InputOptions Props of the field.
 ---@param on_submit fun(value: string): nil Action that requires the inputted value.
 function M.multiline_input(opts, on_submit)
-	if has_nui then
+	if require("convcommit.setup").has_nui then
 		local default = opts.default or ""
 		local lines = vim.split(default, "\n")
 		local popup = require("nui.popup")({
@@ -95,7 +90,7 @@ function M.multiline_input(opts, on_submit)
 			popup:mount()
 		end)
 		vim.api.nvim_buf_set_lines(popup.bufnr, 0, -1, false, lines)
-		vim.keymap.set("n", validate_input_key, function()
+		vim.keymap.set("n", require("convcommit.setup").validate_input_key, function()
 			local result = vim.api.nvim_buf_get_lines(popup.bufnr, 0, -1, false)
 			popup:unmount()
 			on_submit(table.concat(result, "\n"))

@@ -1,7 +1,6 @@
 local M = {}
-local has_notify = require("convcommit.setup").has_notify
 local notify = function(message, level)
-	if has_notify then
+	if require("convcommit.setup").has_notify then
 		require("notify")(message, level, { title = "Push" })
 	else
 		vim.notify(message, level)

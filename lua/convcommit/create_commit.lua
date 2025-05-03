@@ -1,19 +1,16 @@
 local M = {}
 
-local has_notify = require("convcommit.setup").has_notify
 local input = require("convcommit.input").input
 local multiline = require("convcommit.input").multiline_input
 local select = require("convcommit.select").select
 local commit_builder = require("convcommit.commit_builder")
 local notify = function(message, level)
-	if has_notify then
+	if require("convcommit.setup").has_notify then
 		require("notify")(message, level, { title = "Commit" })
 	else
 		vim.notify(message, level)
 	end
 end
-local commit_types = require("convcommit.setup").commit_types
-local footer_keys = require("convcommit.setup").footer_keys
 local unpack = table.unpack or unpack
 
 ---@type CommitBuilder
@@ -22,7 +19,7 @@ local builder
 --- Displays the commit message a last time, allowing for modifications before creating the commit.
 local function preview()
 	multiline({ prompt = "Confirm message:", default = commit_builder.build(builder) }, function(message)
-		vim.fn.system('git commit -m "' .. message .. '"')
+		vim.fn.system(string.format('git commit -m "%s"', message))
 		local status = vim.v.shell_error
 		if status == 0 then
 			notify("✅ Commit created!", vim.log.levels.INFO)
@@ -38,7 +35,7 @@ end
 
 --- Adds footers recursively
 local function add_footer()
-	local footers = { unpack(footer_keys) }
+	local footers = { unpack(require("convcommit.setup").footer_keys) }
 	table.insert(footers, 1, "End creation")
 	table.insert(footers, "Other")
 	select(footers, { prompt = "Add a footer:", default = "End creation" }, function(key)
@@ -119,14 +116,18 @@ end
 --- Acceptable values are: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test,
 --- merge
 local function select_commit_type()
-	select(commit_types, { prompt = "Select commit type:", default = "fix" }, function(choice)
-		if not choice or choice == "" then
-			notify("❌ Commit cancelled.", vim.log.levels.ERROR)
-		else
-			builder.type = choice
-			select_scope()
+	select(
+		require("convcommit.setup").commit_types,
+		{ prompt = "Select commit type:", default = "fix" },
+		function(choice)
+			if not choice or choice == "" then
+				notify("❌ Commit cancelled.", vim.log.levels.ERROR)
+			else
+				builder.type = choice
+				select_scope()
+			end
 		end
-	end)
+	)
 end
 
 --- Creates the ticket information knowing the source of the ticket.

@@ -1,7 +1,6 @@
 local M = {}
 
-local has_telescope = require("convcommit.setup").has_telescope
-if not has_telescope then
+if not require("convcommit.setup").has_telescope then
 	M.git_add = function() end
 	return M
 end

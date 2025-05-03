@@ -1,9 +1,7 @@
 local M = {}
 
-local multiline = require("convcommit.input").multiline_input
-local has_nui = require("convcommit.setup").has_nui
 local notify = function(message, level)
-	if has_nui then
+	if require("convcommit.setup").has_nui then
 		require("notify")(message, level, { title = "Version" })
 	else
 		vim.notify(message, level)
@@ -152,12 +150,15 @@ end
 ---@param version string New version tag to create.
 ---@param entries string[] List of entries to add in the CHANGELOG.md file.
 local function ask_for_confirmation(version, entries)
-	multiline({ prompt = "Confirm message:", default = M.build_changelog(version, entries) }, function(message)
-		write_changelog(message)
-		commit_changelog(version)
-		notify(create_tag(version), vim.log.levels.INFO)
-		notify("✅ Changelog created!", vim.log.levels.INFO)
-	end)
+	require("convcommit.input").multiline_input(
+		{ prompt = "Confirm message:", default = M.build_changelog(version, entries) },
+		function(message)
+			write_changelog(message)
+			commit_changelog(version)
+			notify(create_tag(version), vim.log.levels.INFO)
+			notify("✅ Changelog created!", vim.log.levels.INFO)
+		end
+	)
 end
 
 --- Determines the new version from the latest tag and commits done since, asks for confirmation,

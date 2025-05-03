@@ -1,8 +1,5 @@
-local has_telescope = require("convcommit.setup").has_telescope
-local has_notify = require("convcommit.setup").has_notify
-
 local notify = function(message, level)
-	if has_notify then
+	if require("convcommit.setup").has_notify then
 		require("notify")(message, level, { title = "Select" })
 	else
 		vim.notify(message, level)
@@ -21,7 +18,7 @@ local M = {}
 ---@param opts SelectOption Props of the input.
 ---@param on_choice fun(value: string): nil Function that requires the result of the select.
 function M.select(items, opts, on_choice)
-	if has_telescope then
+	if require("convcommit.setup").has_telescope then
 		local actions = require("telescope.actions")
 		local action_state = require("telescope.actions.state")
 		require("telescope.pickers")
