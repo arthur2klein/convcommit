@@ -89,7 +89,7 @@ function M.push(config)
 			on_done()
 		end
 	end
-	run_git_cmd("git pull --rebase", "Git pull", function()
+	run_git_cmd("git pull --autostash --rebase", "Git pull", function()
 		run_git_cmd("git push", "Git push")
 		if config.open_pipeline == nil or config.open_pipeline then
 			local ref = get_commit_pipeline_url()
