@@ -51,7 +51,7 @@ M.excluded_types = { "docs", "test", "ci", "merge" }
 
 --- Key to validate multi-line inputs.
 ---@type string
-M.validate_input_key = "<leader><CR>"
+M.validate_input_key = "<CR>"
 
 --- Defines global parameters for the plugin.
 ---@param options SetupOptions Options available.

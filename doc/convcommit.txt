@@ -164,7 +164,7 @@ Accepted fields are:
   Default: {"docs", "test", "ci", "merge"}
 - validate_input_key: Key used to validate a     *convcommit-validate-input-key*
   multiline input.
-  Default: "<leader><CR>"
+  Default: "<CR>"
 
 ------------------------------------------------------------------------------
 PushConfig                                              *convcommit-push-config*
