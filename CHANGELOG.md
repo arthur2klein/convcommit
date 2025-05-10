@@ -57,3 +57,10 @@
 
 
 
+## v0.4.2 - 2025-05-10
+
+- fix(setup.lua): use CR to validate popup
+- fix(git_push.lua): autostash when pulling
+
+
+
