@@ -64,3 +64,9 @@
 
 
 
+## v0.4.3 - 2025-06-28
+
+- fix(create_commit): remove extension from scope
+
+
+
