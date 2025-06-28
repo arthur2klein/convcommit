@@ -99,7 +99,7 @@ end
 --- Inputs the optional scope of the commit.
 --- Acceptable values are amongst the part of path of staged changes.
 local function select_scope()
-	local scopes = vim.fn.systemlist("git diff --name-only --cached | sed 's:/:\\n:g' | sort -u")
+	local scopes = vim.fn.systemlist("git diff --name-only --cached | sed 's:\\.[^/]*::g' | sed 's:/:\\n:g' | sort -u")
 	table.insert(scopes, "none")
 	select(scopes, { prompt = "Select scope (or none):", default = "none" }, function(choice)
 		if choice ~= "none" then
