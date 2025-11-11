@@ -70,3 +70,9 @@
 
 
 
+## v0.5.0 - 2025-11-11
+
+- feat(version): bump version in swagger on commit
+
+
+
