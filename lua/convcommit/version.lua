@@ -79,6 +79,60 @@ function M.determine_bump(commits)
 	return bump
 end
 
+local function update_swagger_version(version)
+	local swaggerFiles = {
+		"swagger.yaml",
+		"swagger.yml",
+		"openapi.yaml",
+		"openapi.yml",
+		"docs/swagger.yaml",
+		"docs/swagger.yml",
+		"docs/openapi.yaml",
+		"docs/openapi.yml",
+		"doc/swagger.yaml",
+		"doc/swagger.yml",
+		"doc/openapi.yaml",
+		"doc/openapi.yml",
+	}
+	local function fileExists(path)
+		local f = io.open(path, "r")
+		if f then
+			f:close()
+			return true
+		else
+			return false
+		end
+	end
+	local function readFile(path)
+		local f = assert(io.open(path, "r"))
+		local content = f:read("*all")
+		f:close()
+		return content
+	end
+	local function writeFile(path, content)
+		local f = assert(io.open(path, "w"))
+		f:write(content)
+		f:close()
+	end
+	for _, filename in ipairs(swaggerFiles) do
+		if fileExists(filename) then
+			notify("Found swagger file: " .. filename, vim.log.levels.INFO)
+			local content = readFile(filename)
+			local updated, count =
+				content:gsub("(%f[%w]version:%s*['\"]?)([%w%p]+)(['\"]?)", "%1" .. version .. "%3", 1)
+			if count > 0 then
+				writeFile(filename, updated)
+				notify("Updated version to " .. version .. " in " .. filename, vim.log.levels.INFO)
+				return true
+			else
+				notify("No version field found in " .. filename, vim.log.levels.ERROR)
+			end
+		end
+	end
+	notify("No Swagger file found or no version field updated.", vim.log.levels.INFO)
+	return false
+end
+
 --- Determines the new version tag after the given one for the given level of bump.
 --- If no previous version, v0.0.0 will be returned.
 ---@param version string|nil Previous version tag.
@@ -155,6 +209,7 @@ local function ask_for_confirmation(version, entries)
 		function(message)
 			write_changelog(message)
 			commit_changelog(version)
+			update_swagger_version(version)
 			notify(create_tag(version), vim.log.levels.INFO)
 			notify("✅ Changelog created!", vim.log.levels.INFO)
 		end

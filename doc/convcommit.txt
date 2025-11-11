@@ -24,6 +24,7 @@ Creates a new version tag based on commit messages since the latest tag.
 - Prompts the user to confirm or edit the changelog message.
 - Writes the message to `CHANGELOG.md`.
 - Creates a Git tag and pushes it to the remote.
+- Updates the swagger.yaml or openapi.yaml file if found.
 - Commits the changelog with a standard commit message.
 
 Uses the `Changelog-Entry:` commit footer if available, or falls back to the
