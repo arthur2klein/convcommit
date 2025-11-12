@@ -123,6 +123,7 @@ local function update_swagger_version(version)
 			if count > 0 then
 				writeFile(filename, updated)
 				notify("Updated version to " .. version .. " in " .. filename, vim.log.levels.INFO)
+				vim.fn.system("git add " .. filename)
 				return true
 			else
 				notify("No version field found in " .. filename, vim.log.levels.ERROR)
@@ -208,8 +209,8 @@ local function ask_for_confirmation(version, entries)
 		{ prompt = "Confirm message:", default = M.build_changelog(version, entries) },
 		function(message)
 			write_changelog(message)
-			commit_changelog(version)
 			update_swagger_version(version)
+			commit_changelog(version)
 			notify(create_tag(version), vim.log.levels.INFO)
 			notify("✅ Changelog created!", vim.log.levels.INFO)
 		end
