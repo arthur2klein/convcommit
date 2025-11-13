@@ -76,3 +76,9 @@
 
 
 
+## v0.5.1 - 2025-11-13
+
+- fix(versions): add swagger file after changing the version
+
+
+
