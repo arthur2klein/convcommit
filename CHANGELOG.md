@@ -88,3 +88,9 @@
 
 
 
+## v0.6.0 - 2026-04-18
+
+- feat(version): search swagger file in swagger folder too
+
+
+
