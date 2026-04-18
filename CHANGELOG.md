@@ -76,9 +76,15 @@
 
 
 
+<<<<<<< HEAD
 ## v0.5.1 - 2025-11-13
 
 - fix(versions): add swagger file after changing the version
+=======
+## v0.6.0 - 2026-04-18
+
+- feat(version): search swagger file in swagger folder too
+>>>>>>> 7bc6409 (docs(CHANGELOG.md): Add changelog for version v0.6.0)
 
 
 
