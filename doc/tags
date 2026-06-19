@@ -2,6 +2,7 @@ convcommit	convcommit.txt	/*convcommit*
 convcommit-api	convcommit.txt	/*convcommit-api*
 convcommit-commit-types	convcommit.txt	/*convcommit-commit-types*
 convcommit-config	convcommit.txt	/*convcommit-config*
+convcommit-default-branch	convcommit.txt	/*convcommit-default-branch*
 convcommit-excluded-types	convcommit.txt	/*convcommit-excluded-types*
 convcommit-footer-keys	convcommit.txt	/*convcommit-footer-keys*
 convcommit-intro	convcommit.txt	/*convcommit-intro*
@@ -9,6 +10,7 @@ convcommit-push-config	convcommit.txt	/*convcommit-push-config*
 convcommit-usage	convcommit.txt	/*convcommit-usage*
 convcommit.create_commit()	convcommit.txt	/*convcommit.create_commit()*
 convcommit.create_version_tag()	convcommit.txt	/*convcommit.create_version_tag()*
+convcommit.generate_changelog()	convcommit.txt	/*convcommit.generate_changelog()*
 convcommit.git_add()	convcommit.txt	/*convcommit.git_add()*
 convcommit.push()	convcommit.txt	/*convcommit.push()*
 convcommit.setup()	convcommit.txt	/*convcommit.setup()*

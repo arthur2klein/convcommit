@@ -35,11 +35,25 @@ This project makes use of several other projects to manage ui:
     convcommit.setup({validate_input_key = "<CR>"})
     vim.keymap.set("n", "<leader>gg", convcommit.create_commit)
     vim.keymap.set("n", "<leader>gv", convcommit.create_version_tag)
+    vim.keymap.set("n", "<leader>gV", convcommit.generate_changelog)
     vim.keymap.set("n", "<leader>gp", convcommit.push)
     vim.keymap.set("n", "<leader>ga", convcommit.git_add)
   end,
 }
 ```
+
+## Versioning and changelog
+
+`create_version_tag` stores each release changelog in the **annotated tag
+message**, so there is no committed `CHANGELOG.md` and no auto changelog
+commit. Rebuild the changelog on demand from those tag messages with
+`generate_changelog` (it opens a scratch buffer; nothing is written or
+committed).
+
+On a branch other than the default branch it creates a SemVer pre-release
+*staging* version `vX.Y.Z-<branch>.<n>`, bumped from the default branch's
+latest release (so the base stays stable) where `<n>` counts the tags created
+on the branch since it diverged. See the `default_branch` setup option.
 
 ## Additional information
 

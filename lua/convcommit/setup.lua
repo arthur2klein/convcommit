@@ -17,6 +17,7 @@ M.has_telescope = pcall(require, "telescope.pickers")
 ---@field footer_keys string[]? Table of available footer keys.
 ---@field excluded_types string[]? Types to exclude from changelog.
 ---@field validate_input_key string? Key to validate an input.
+---@field default_branch string? Default branch name. Auto-detected when nil.
 
 --- Available types of commits
 ---@type string[]
@@ -53,6 +54,11 @@ M.excluded_types = { "docs", "test", "ci", "merge" }
 ---@type string
 M.validate_input_key = "<CR>"
 
+--- Default branch name used to compute staging versions. When nil it is
+--- auto-detected (remote HEAD, then main/master).
+---@type string|nil
+M.default_branch = nil
+
 --- Defines global parameters for the plugin.
 ---@param options SetupOptions Options available.
 function M.setup(options)
@@ -61,6 +67,7 @@ function M.setup(options)
 	M.footer_keys = options.footer_keys or M.footer_keys
 	M.excluded_types = options.excluded_types or M.excluded_types
 	M.validate_input_key = options.validate_input_key or M.validate_input_key
+	M.default_branch = options.default_branch or M.default_branch
 end
 
 return M

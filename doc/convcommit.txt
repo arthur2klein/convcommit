@@ -6,7 +6,9 @@ INTRODUCTION                                                  *convcommit-intro*
 This plugin provides custom git-related workflow commands for version tagging,
 committing, and pushing changes.
 It is designed for projects requiring guided conventional commits and
-changelog construction.
+changelog construction. Changelogs are stored in annotated tag messages
+rather than a committed file, and non-default branches produce SemVer
+pre-release staging versions.
 
 ==============================================================================
 COMMANDS & FUNCTIONS                                            *convcommit-api*
@@ -16,19 +18,48 @@ The following Lua functions are exposed:
 ------------------------------------------------------------------------------
 `require('convcommit').create_version_tag()`     *convcommit.create_version_tag()*
 
+See also:
+- |convcommit.generate_changelog()|
+- |convcommit-default-branch|
+
 Creates a new version tag based on commit messages since the latest tag.
 
-- Analyzes commit messages since the latest tag.
+- Analyzes commit messages since the latest release tag.
 - Determines the appropriate bump level (major, minor, patch).
 - Generates a changelog section for the new version.
 - Prompts the user to confirm or edit the changelog message.
-- Writes the message to `CHANGELOG.md`.
-- Creates a Git tag and pushes it to the remote.
-- Updates the swagger.yaml or openapi.yaml file if found.
-- Commits the changelog with a standard commit message.
+- Creates an annotated Git tag whose message IS the changelog (no
+  `CHANGELOG.md` file and no changelog commit are created), and pushes it.
+- Updates the swagger.yaml or openapi.yaml file if found, committing it
+  (only this swagger bump is committed, and only when a file was changed).
 
 Uses the `Changelog-Entry:` commit footer if available, or falls back to the
 first line of the commit message.
+
+Staging versions ~
+
+On a branch other than the default branch (see |convcommit-default-branch|)
+the result is a staging version instead. The base bump is computed from the
+latest release tag on the default branch, so it stays stable across staging
+builds, and is suffixed with the SemVer pre-release `-<branch>.<n>`, where
+`<n>` is the number of tags created on the branch since it diverged from the
+default branch. Staging versions only create (a lightweight) tag after a
+confirmation prompt; they do not touch the changelog or swagger files.
+
+Example: on branch `feature/foo`, with the latest default-branch release at
+`v1.2.0` and a `feat:` commit since, the first build tags `v1.2.1-feature-foo.0`,
+the next `v1.2.1-feature-foo.1`, and so on.
+
+------------------------------------------------------------------------------
+`require('convcommit').generate_changelog()`   *convcommit.generate_changelog()*
+
+Rebuilds the full changelog on demand from the annotated release tag messages
+and opens it in a throwaway markdown scratch buffer. Nothing is written to
+disk or committed; save the buffer yourself if you want a file.
+
+- Lists tags by descending creation date.
+- Skips pre-release / staging tags (those containing `-`).
+- Concatenates each remaining tag's annotation message.
 
 ------------------------------------------------------------------------------
 `require('convcommit').git_add()`                           *convcommit.git_add()*
@@ -166,6 +197,12 @@ Accepted fields are:
 - validate_input_key: Key used to validate a     *convcommit-validate-input-key*
   multiline input.
   Default: "<CR>"
+- default_branch: Name of the default branch,        *convcommit-default-branch*
+  used to decide whether |convcommit.create_version_tag()| produces a release
+  or a staging version, and to compute the staging base and counter.
+  When nil it is auto-detected from the remote HEAD (origin/HEAD), then
+  falls back to `main` or `master`.
+  Default: nil
 
 ------------------------------------------------------------------------------
 PushConfig                                              *convcommit-push-config*
