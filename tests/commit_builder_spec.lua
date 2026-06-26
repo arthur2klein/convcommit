@@ -59,4 +59,24 @@ Ticket-Id: #123\
 Ticket-Link: https://github.com/example/repo/issues/123"
 		assert.equal(expected, message)
 	end)
+
+	it("preserves blank lines in the body", function()
+		---@type CommitBuilder
+		local commit = {
+			type = "docs",
+			subject = "rewrite readme",
+			body = "First paragraph.\n\nSecond paragraph.\n\n\nThird paragraph.",
+			footers = {},
+		}
+		local message = commit_builder.build(commit)
+		local expected = "docs: rewrite readme\
+\
+First paragraph.\
+\
+Second paragraph.\
+\
+\
+Third paragraph."
+		assert.equal(expected, message)
+	end)
 end)

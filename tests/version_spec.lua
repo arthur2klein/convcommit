@@ -17,12 +17,22 @@ describe("version module", function()
 		it("correctly bumps major", function()
 			assert.are.equal("v2.0.0", version.bump_version("v1.2.3", "major"))
 		end)
+
+		it("returns v0.0.0 for a malformed previous version", function()
+			assert.are.equal("v0.0.0", version.bump_version("not-a-version", "patch"))
+			assert.are.equal("v0.0.0", version.bump_version("v1.2", "minor"))
+		end)
 	end)
 
 	describe("determine_bump", function()
 		it("detects major bump when BREAKING CHANGE is present", function()
 			local commits = { "fix: something", "BREAKING CHANGE: big change" }
 			assert.are.equal("major", version.determine_bump(commits))
+		end)
+
+		it("detects major bump from a bang breaking marker", function()
+			assert.are.equal("major", version.determine_bump({ "feat!: drop old api" }))
+			assert.are.equal("major", version.determine_bump({ "fix(core)!: change return type" }))
 		end)
 
 		it("detects minor bump when feat commit is present", function()

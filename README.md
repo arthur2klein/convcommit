@@ -18,6 +18,11 @@ This project makes use of several other projects to manage ui:
 - nvim-telescope/telescope.nvim ⇒ option selection,
 - rcarriga/nvim-notify ⇒ notifications.
 
+These dependencies are optional: when one is missing the plugin falls back
+to the built-in `vim.ui` equivalents. Note that nui is what enables the
+multi-line body popup; without it the body falls back to a single-line
+`vim.ui.input`, so multi-paragraph bodies need nui.
+
 ## Configuration
 
 ### Using Lazy
