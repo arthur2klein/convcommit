@@ -34,17 +34,21 @@ end
 local function wrap_text(text, width)
 	width = width or 80
 	local wrapped = {}
-	for line in text:gmatch("[^\n]+") do
-		local current = ""
-		for word in line:gmatch("%S+") do
-			if #current + #word + 1 > width and #current > 0 then
-				table.insert(wrapped, current)
-				current = word
-			else
-				current = current == "" and word or (current .. " " .. word)
+	for line in (text .. "\n"):gmatch("(.-)\n") do
+		if line == "" then
+			table.insert(wrapped, "")
+		else
+			local current = ""
+			for word in line:gmatch("%S+") do
+				if #current + #word + 1 > width and #current > 0 then
+					table.insert(wrapped, current)
+					current = word
+				else
+					current = current == "" and word or (current .. " " .. word)
+				end
 			end
+			table.insert(wrapped, current)
 		end
-		table.insert(wrapped, current)
 	end
 	return table.concat(wrapped, "\n")
 end
