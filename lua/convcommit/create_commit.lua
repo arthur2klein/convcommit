@@ -4,13 +4,7 @@ local input = require("convcommit.input").input
 local multiline = require("convcommit.input").multiline_input
 local select = require("convcommit.select").select
 local commit_builder = require("convcommit.commit_builder")
-local notify = function(message, level)
-	if require("convcommit.setup").has_notify then
-		require("notify")(message, level, { title = "Commit" })
-	else
-		vim.notify(message, level)
-	end
-end
+local notify = require("convcommit.notify").with_title("Commit")
 local unpack = table.unpack or unpack
 
 ---@type CommitBuilder
@@ -19,7 +13,7 @@ local builder
 --- Displays the commit message a last time, allowing for modifications before creating the commit.
 local function preview()
 	multiline({ prompt = "Confirm message:", default = commit_builder.build(builder) }, function(message)
-		vim.fn.system(string.format('git commit -m "%s"', message))
+		vim.fn.system({ "git", "commit", "-m", message })
 		local status = vim.v.shell_error
 		if status == 0 then
 			notify("✅ Commit created!", vim.log.levels.INFO)
@@ -90,6 +84,7 @@ local function enter_subject()
 	input({ prompt = "Enter commit subject:" }, function(subject)
 		if not subject or subject == "" then
 			notify("❌ Commit cancelled.", vim.log.levels.ERROR)
+			return
 		end
 		builder.subject = subject
 		enter_body()
@@ -99,7 +94,21 @@ end
 --- Inputs the optional scope of the commit.
 --- Acceptable values are amongst the part of path of staged changes.
 local function select_scope()
-	local scopes = vim.fn.systemlist("git diff --name-only --cached | sed 's:\\.[^/]*::g' | sed 's:/:\\n:g' | sort -u")
+	-- Offer every path component of the staged files (extension stripped)
+	-- as a scope candidate. Done in Lua to avoid relying on GNU sed.
+	local files = vim.fn.systemlist("git diff --name-only --cached")
+	local seen = {}
+	local scopes = {}
+	for _, file in ipairs(files) do
+		for segment in file:gmatch("[^/]+") do
+			segment = segment:gsub("%..*$", "")
+			if segment ~= "" and not seen[segment] then
+				seen[segment] = true
+				table.insert(scopes, segment)
+			end
+		end
+	end
+	table.sort(scopes)
 	table.insert(scopes, "none")
 	select(scopes, { prompt = "Select scope (or none):", default = "none" }, function(choice)
 		if choice ~= "none" then
@@ -136,6 +145,7 @@ local function input_ticket(type)
 	input({ prompt = string.format("Enter %s ticket link:", type) }, function(link)
 		if not link or link == "" then
 			notify("❌ Commit cancelled.", vim.log.levels.ERROR)
+			return
 		end
 		commit_builder.setTicket(builder, link, type)
 		select_commit_type()
