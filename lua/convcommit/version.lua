@@ -1,21 +1,14 @@
 local M = {}
 
-local notify = function(message, level)
-	if require("convcommit.setup").has_nui then
-		require("notify")(message, level, { title = "Version" })
-	else
-		vim.notify(message, level)
-	end
-end
-local excluded_types = require("convcommit.setup").excluded_types
+local notify = require("convcommit.notify").with_title("Version")
 
 --- Returns the latest release tag reachable from the given ref.
---- Tags that contain "#" (staging tags) are excluded so the base
---- version stays stable across staging builds.
+--- Pre-release / staging tags (those containing "-") are excluded so the
+--- base version stays stable across staging builds.
 --- @param ref string|nil Ref to describe from (defaults to HEAD).
 --- @return string | nil: Latest release tag, or nil if none.
 local function get_latest_tag(ref)
-	local cmd = "git describe --tags --abbrev=0 --exclude '*#*'"
+	local cmd = "git describe --tags --abbrev=0 --exclude '*-*'"
 	if ref and ref ~= "" then
 		cmd = cmd .. " " .. ref
 	end
@@ -98,7 +91,7 @@ end
 ---@return boolean: True iff the commit can be included in the changelog.
 function M.should_be_included_in_changelog(commit)
 	local is_excluded = false
-	for _, prefix in ipairs(excluded_types) do
+	for _, prefix in ipairs(require("convcommit.setup").excluded_types) do
 		if string.sub(commit, 1, #prefix) == prefix then
 			is_excluded = true
 			break
@@ -124,7 +117,7 @@ local function get_changelog_entries_since(tag)
 	local raw_output = vim.fn.system(cmd)
 	local entries = {}
 	for commit in string.gmatch(raw_output, "(.-)" .. delimiter) do
-		local changelog_entry = commit:match("[Cc]hangelog%-[Ee]ntry:%s*(.+)")
+		local changelog_entry = commit:match("[Cc]hangelog%-[Ee]ntry:%s*([^\n]+)")
 		if changelog_entry then
 			table.insert(entries, changelog_entry)
 		else
@@ -143,7 +136,9 @@ end
 function M.determine_bump(commits)
 	local bump = "patch"
 	for _, c in ipairs(commits) do
-		if c:match("BREAKING CHANGE") then
+		-- A "!" before the colon (feat!: or feat(scope)!:) also marks a
+		-- breaking change per the Conventional Commits spec.
+		if c:match("BREAKING CHANGE") or c:match("^%w+!:") or c:match("^%w+%b()!:") then
 			return "major"
 		elseif c:match("^feat") then
 			bump = "minor"
@@ -200,7 +195,7 @@ local function update_swagger_version(version)
 			if count > 0 then
 				writeFile(filename, updated)
 				notify("Updated version to " .. version .. " in " .. filename, vim.log.levels.INFO)
-				vim.fn.system("git add " .. filename)
+				vim.fn.system({ "git", "add", filename })
 				return true
 			else
 				notify("No version field found in " .. filename, vim.log.levels.ERROR)
@@ -217,10 +212,14 @@ end
 ---@param level string Level of bump amongst patch, minor and major.
 ---@return string: New version tag.
 function M.bump_version(version, level)
-	if version == nil then
+	local major, minor, patch
+	if version ~= nil then
+		major, minor, patch = version:match("v?(%d+)%.(%d+)%.(%d+)")
+	end
+	if not major then
+		-- No previous version, or a tag that is not vX.Y.Z: start fresh.
 		return "v0.0.0"
 	end
-	local major, minor, patch = version:match("v?(%d+)%.(%d+)%.(%d+)")
 	major, minor, patch = tonumber(major), tonumber(minor), tonumber(patch)
 	if level == "major" then
 		major = major + 1
