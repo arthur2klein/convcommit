@@ -1,38 +1,43 @@
 local M = {}
-local notify = function(message, level)
-	if require("convcommit.setup").has_notify then
-		require("notify")(message, level, { title = "Push" })
-	else
-		vim.notify(message, level)
-	end
-end
+local notify = require("convcommit.notify").with_title("Push")
 
 ---@class PushConfig Configuration of the push() function.
 ---@field should_pull boolean? If true, will pull before pushing. Default to true.
 ---@field open_pipeline boolean? If true, will open a browser with the new ci. Default to true.
 
 --- Parse a remote url to determine its hosting site, the user and the name of the repo.
+--- Handles scp-like (git@host:path) and url (scheme://host/path) forms, an
+--- optional ".git" suffix, GitLab subgroups, and self-hosted GitHub/GitLab
+--- instances (matched by host name).
 ---@param remote string Remote to parse.
 ---@return string?, string?, string?: "github", "gitlab" or nil for the first argument, followed
----by the user and the repo of the project if hosting site not nil.
+---by the user (or group path) and the repo of the project if hosting site not nil.
 local function parse_remote(remote)
-	local user, repo = remote:match("git@github%.com:(.-)/(.-)%.git")
-	if user and repo then
-		return "github", user, repo
+	remote = remote:gsub("%s+$", "")
+	-- scp-like: git@host:user/repo(.git)
+	local host, path = remote:match("^[^@]+@([^:]+):(.+)$")
+	if not host then
+		-- url: scheme://host/user/repo(.git)
+		host, path = remote:match("^%w+://([^/]+)/(.+)$")
 	end
-	user, repo = remote:match("https://github%.com/(.-)/(.-)%.git")
-	if user and repo then
-		return "github", user, repo
+	if not host or not path then
+		return nil, nil, nil
 	end
-	user, repo = remote:match("git@gitlab%.com:(.-)/(.-)%.git")
-	if user and repo then
-		return "gitlab", user, repo
+	local source
+	if host:find("github", 1, true) then
+		source = "github"
+	elseif host:find("gitlab", 1, true) then
+		source = "gitlab"
+	else
+		return nil, nil, nil
 	end
-	user, repo = remote:match("https://gitlab%.com/(.-)/(.-)%.git")
-	if user and repo then
-		return "gitlab", user, repo
+	path = path:gsub("%.git$", "")
+	-- repo is the last segment; everything before it is the user / group path.
+	local user, repo = path:match("^(.+)/([^/]+)$")
+	if not user then
+		return nil, nil, nil
 	end
-	return nil, nil, nil
+	return source, user, repo
 end
 
 --- Returns the pipeline url of the current commit.
