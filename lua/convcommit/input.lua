@@ -11,6 +11,17 @@ local M = {}
 ---@param opts InputOptions Props of the field.
 ---@param on_submit fun(value: string): nil Action that requires the inputed value.
 function M.input(opts, on_submit)
+	local fired = false
+	local function finish(value)
+		if fired then
+			return
+		end
+		fired = true
+		vim.schedule(function()
+			on_submit(value)
+		end)
+	end
+	on_submit = finish
 	if require("convcommit.setup").has_nui then
 		local input = require("nui.input")({
 			position = "50%",
@@ -54,6 +65,17 @@ end
 ---@param opts InputOptions Props of the field.
 ---@param on_submit fun(value: string): nil Action that requires the inputted value.
 function M.multiline_input(opts, on_submit)
+	local fired = false
+	local function finish(value)
+		if fired then
+			return
+		end
+		fired = true
+		vim.schedule(function()
+			on_submit(value)
+		end)
+	end
+	on_submit = finish
 	if require("convcommit.setup").has_nui then
 		local default = opts.default or ""
 		local lines = vim.split(default, "\n")

@@ -12,6 +12,17 @@ local M = {}
 ---@param opts SelectOption Props of the input.
 ---@param on_choice fun(value: string): nil Function that requires the result of the select.
 function M.select(items, opts, on_choice)
+	local fired = false
+	local function finish(value)
+		if fired then
+			return
+		end
+		fired = true
+		vim.schedule(function()
+			on_choice(value)
+		end)
+	end
+
 	if require("convcommit.setup").has_telescope then
 		local actions = require("telescope.actions")
 		local action_state = require("telescope.actions.state")
@@ -28,10 +39,10 @@ function M.select(items, opts, on_choice)
 						local selection = action_state.get_selected_entry()
 						actions.close(prompt_bufnr)
 						if selection then
-							on_choice(selection[1])
+							finish(selection[1])
 						else
 							if opts.default ~= nil then
-								on_choice(opts.default)
+								finish(opts.default)
 							else
 								notify("❌ Cancelled.", vim.log.levels.WARN)
 							end
@@ -44,7 +55,7 @@ function M.select(items, opts, on_choice)
 			})
 			:find()
 	else
-		vim.ui.select(items, opts, on_choice)
+		vim.ui.select(items, opts, finish)
 	end
 end
 

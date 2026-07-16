@@ -47,8 +47,12 @@ local function add_footer()
 			end)
 		else
 			input({ prompt = string.format("Value for footer %s:", key) }, function(value)
-				value = vim.trim(value)
-				commit_builder.add_footer(builder, string.format("%s: %s", key, value))
+				value = vim.trim(value or "")
+				if value ~= "" then
+					commit_builder.add_footer(builder, string.format("%s: %s", key, value))
+				else
+					notify(string.format("Could not add footer %s with an empty value.", key), vim.log.levels.WARN)
+				end
 				add_footer()
 			end)
 		end
